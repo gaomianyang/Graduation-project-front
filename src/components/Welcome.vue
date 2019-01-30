@@ -1,12 +1,10 @@
 <template>
-    <el-row>
-        <el-button type="primary">主要按钮</el-button>
-    </el-row>
+
 </template>
 
 <script>
     export default {
-        name: 'HelloWorld',
+        name: 'Welcome',
         props: {
             msg: String
         }
@@ -18,17 +16,14 @@
     h3 {
         margin: 40px 0 0;
     }
-
     ul {
         list-style-type: none;
         padding: 0;
     }
-
     li {
         display: inline-block;
         margin: 0 10px;
     }
-
     a {
         color: #42b983;
     }
