@@ -1,12 +1,12 @@
 <template>
     <el-row>
-        <el-button type="primary">主要按钮</el-button>
+        <el-button type="primary">Header</el-button>
     </el-row>
 </template>
 
 <script>
     export default {
-        name: 'HelloWorld',
+        name: 'Header',
         props: {
             msg: String
         }
