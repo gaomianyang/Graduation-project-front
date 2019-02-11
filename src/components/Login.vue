@@ -54,7 +54,7 @@
                     password: that.inputPassWord
                 })
                     .then(function (response) {
-                        console.log("返回结果：");
+                        console.log("返回结果为：");
                         console.log(response.data);
                     })
                     .catch(function (error) {
