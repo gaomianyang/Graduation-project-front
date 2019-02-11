@@ -49,13 +49,17 @@
         methods: {
             login() {
                 var that = this
-                this.$axios.post('/api/SqlTest/findOne', {
+                this.axios.post('/api/SqlTest/findOne', {
                     userName: that.inputUserName,
                     password: that.inputPassWord
                 })
                     .then(function (response) {
-                        console.log("返回结果为：");
-                        console.log(response.data);
+                        console.log("用户名为：");
+                        console.log(response.data.userName);
+                        if (response.data.userName != null)
+                        {
+                            window.location.href="localhost/success";
+                        }
                     })
                     .catch(function (error) {
                         console.log(error);

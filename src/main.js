@@ -4,12 +4,12 @@ import 'element-ui/lib/theme-chalk/index.css';
 import App from './App.vue'
 import router from './router'
 import axios from 'axios'
-// import VueAxios from 'vue-axios'
+import VueAxios from 'vue-axios'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI);
-Vue.prototype.$axios = axios
-// Vue.use(VueAxios,axios);
+// Vue.prototype.$axios = axios
+Vue.use(VueAxios,axios);
 
 
 new Vue({
