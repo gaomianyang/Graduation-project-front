@@ -23,9 +23,11 @@
                             placeholder="请输入密码"
                             v-model="inputPassWord"
                             clearable
-                            type="password"
+                            :type="ifSee"
                             maxlength="16"
-                            prefix-icon="el-icon-view">
+                            prefix="el-icon-view">
+                            <!--prefix-icon="el-icon-view"-->
+                        <i slot="prefix" class="el-icon-view" @click="see" style="margin-left: 6px"></i>
                     </el-input>
                 </el-form-item>
                 <br/><br/>
@@ -50,26 +52,45 @@
             login() {
                 var that = this
                 this.axios.post('/api/SqlTest/findOne', {
-                    userName: that.inputUserName,
-                    password: that.inputPassWord
+                    userName: this.inputUserName,
+                    password: this.inputPassWord
                 })
                     .then(function (response) {
-                        console.log("用户名为：");
-                        console.log(response.data.userName);
-                        if (response.data.userName != null)
+                        console.log("用户名为：")
+                        console.log(response.data.userName)
+                        if (null != response.data.userName)
                         {
-                            window.location.href="localhost/success";
+                            window.location.href="/Header"
                         }
                     })
                     .catch(function (error) {
-                        console.log(error);
+                        console.log(error)
+                        that.error()
                     });
+            },
+            error() {
+                this.$message({
+                    showClose: true,
+                    message: '账号或密码错误',
+                    type: 'error'
+                });
+            },
+            see() {
+                if (this.ifSee === ''){
+                    this.ifSee = 'password'
+                    console.log(this.ifSee)
+                }
+                else {
+                    this.ifSee = ''
+                    console.log(this.ifSee)
+                }
             }
         },
         data() {
             return {
                 inputUserName: '',
-                inputPassWord: ''
+                inputPassWord: '',
+                ifSee: 'password'
             }
         }
     }
