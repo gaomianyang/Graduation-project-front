@@ -1,35 +1,26 @@
 <template>
-    <el-row>
-        <el-button type="primary">Header</el-button>
-    </el-row>
+    <div>
+        <router-link to="/Welcome">
+            <a class="logo"><img src="./img/logo.png" height="80px" width="80"></a>
+        </router-link>
+    </div>
 </template>
 
 <script>
     export default {
         name: 'Header',
-        props: {
-            msg: String
-        }
+//        props: {
+//            msg: String
+//        },
     }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-    h3 {
-        margin: 40px 0 0;
+    .logo{
+        margin-left:20%;
     }
-
-    ul {
-        list-style-type: none;
-        padding: 0;
-    }
-
-    li {
-        display: inline-block;
-        margin: 0 10px;
-    }
-
-    a {
-        color: #42b983;
+    .input{
+        width: 400px;
     }
 </style>

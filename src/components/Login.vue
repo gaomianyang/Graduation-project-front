@@ -1,49 +1,59 @@
 <template>
     <div>
-        <router-link to="/Welcome">
-            <a class="logo"><img src="./img/logo.png" height="80px" width="80"></a>
-        </router-link>
-        <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-        <div style="text-align: center">
-            <el-form ref="form">
-                <el-form-item>
-                    <el-input
-                            class="input"
-                            placeholder="请输入账号/邮箱/手机号"
-                            v-model="inputUserName"
-                            clearable
-                            maxlength="16"
-                            prefix-icon="el-icon-mobile-phone">
-                    </el-input>
-                </el-form-item>
-                <br/>
-                <el-form-item>
-                    <el-input
-                            class="input"
-                            placeholder="请输入密码"
-                            v-model="inputPassWord"
-                            clearable
-                            :type="ifSee"
-                            maxlength="16"
-                            prefix="el-icon-view">
-                            <!--prefix-icon="el-icon-view"-->
-                        <i slot="prefix" class="el-icon-view" @click="see" style="margin-left: 6px"></i>
-                    </el-input>
-                </el-form-item>
-                <br/><br/>
-                <el-form-item>
-                    <el-row>
-                        <el-button type="primary" @click="login" plain round>Login</el-button>&nbsp&nbsp&nbsp&nbsp
-                        <el-button type="primary" plain round>Register</el-button>
-                    </el-row>
-                </el-form-item>
-            </el-form>
-        </div>
+    <Header></Header>
+    <div style="margin:0 auto; width:600px;">
+        <br/><br/><br/><br/><br/>
+        <br/><br/><br/><br/><br/>
+        <el-form label-width="80px" :model="loginForm" ref="loginForm">
+            <el-form-item prop="inputUserName" :rules="{
+      required: true, message: '账号不能为空', trigger: 'blur'
+    }">
+                <el-input
+                        class="input"
+                        placeholder="请输入账号/邮箱/手机号"
+                        v-model="loginForm.inputUserName"
+                        clearable
+                        maxlength="16"
+                        prefix-icon="el-icon-mobile-phone">
+                </el-input>
+            </el-form-item>
+            <br/>
+            <el-form-item prop="inputPassWord" :rules="{
+      required: true, message: '密码不能为空', trigger: 'blur'
+    }">
+                <el-input
+                        class="input"
+                        placeholder="请输入密码"
+                        v-model="loginForm.inputPassWord"
+                        clearable
+                        :type="loginForm.ifSee"
+                        maxlength="16"
+                        prefix="el-icon-view">
+                    <i id="ifSee" slot="prefix" class="el-icon-view" @click="see" style="margin-left: 6px"></i>
+                </el-input>
+            </el-form-item>
+            <br/><br/>
+            <el-form-item style="margin: 0 auto; text-align: center" label-width="-40px">
+                <el-row>
+                    <el-button type="primary" @click="login" plain round>登录</el-button>
+                    &nbsp&nbsp&nbsp&nbsp
+                    <router-link to="/Register">
+                        <el-button type="primary" plain round>注册</el-button>
+                    </router-link>
+                </el-row>
+            </el-form-item>
+        </el-form>
+    </div>
     </div>
 </template>
 
 <script>
+    import Header from './Header.vue'
+
     export default {
+        components: {
+            Header
+        },
         name: 'Login',
         props: {
             msg: String
@@ -51,46 +61,52 @@
         methods: {
             login() {
                 var that = this
-                this.axios.post('/api/SqlTest/findOne', {
-                    userName: this.inputUserName,
-                    password: this.inputPassWord
+                if(this.loginForm.inputUserName === ''){
+                    this.error('请填写账号');
+                    return false;
+                }
+                if(this.loginForm.inputPassWord === ''){
+                    this.error('请填写密码');
+                    return false;
+                }
+                this.axios.post('/api/SqlTest/login', {
+                    userName: this.loginForm.inputUserName,
+                    password: this.loginForm.inputPassWord
                 })
                     .then(function (response) {
-                        console.log("用户名为：")
-                        console.log(response.data.userName)
-                        if (null != response.data.userName)
+                        if (null != response.data)
                         {
-                            window.location.href="/Header"
+                            window.localStorage.Token = response.data
+                            that.$router.replace('/Info')
                         }
                     })
                     .catch(function (error) {
-                        console.log(error)
-                        that.error()
+                        that.error('账号或密码错误')
                     });
             },
-            error() {
+            error(message) {
                 this.$message({
                     showClose: true,
-                    message: '账号或密码错误',
+                    message: message,
                     type: 'error'
                 });
             },
             see() {
-                if (this.ifSee === ''){
-                    this.ifSee = 'password'
-                    console.log(this.ifSee)
+                if (this.loginForm.ifSee === ''){
+                    this.loginForm.ifSee = 'password'
                 }
                 else {
-                    this.ifSee = ''
-                    console.log(this.ifSee)
+                    this.loginForm.ifSee = ''
                 }
             }
         },
         data() {
             return {
-                inputUserName: '',
-                inputPassWord: '',
-                ifSee: 'password'
+                loginForm: {
+                    inputUserName: '',
+                    inputPassWord: '',
+                    ifSee: 'password'
+                }
             }
         }
     }
