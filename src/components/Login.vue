@@ -69,7 +69,7 @@
                     this.error('请填写密码');
                     return false;
                 }
-                this.axios.post('/api/SqlTest/login', {
+                this.axios.post('/api/user/login', {
                     userName: this.loginForm.inputUserName,
                     password: this.loginForm.inputPassWord
                 })

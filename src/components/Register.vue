@@ -45,7 +45,7 @@
                 <br/><br/>
                 <el-form-item style="margin: 0 auto; text-align: center" label-width="-50px">
                     <el-row>
-                        <el-button type="primary" @click="submitForm('ruleForm')" plain round>注册</el-button>
+                        <el-button type="primary" @click="submitForm('ruleForm')" plain round :disabled="ruleForm.ifRegister">注册</el-button>
                         &nbsp&nbsp&nbsp&nbsp
                         <el-button type="primary" @click="resetForm('ruleForm')" plain round>重置</el-button>
                     </el-row>
@@ -70,6 +70,7 @@
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
+                        this.ruleForm.ifRegister = true;
                         this.register();
                     } else {
                         this.error('请正确填写相关信息');
@@ -82,7 +83,7 @@
             },
             register() {
                 var that = this;
-                this.axios.post('/api/SqlTest/register', {
+                this.axios.post('/api/user/register', {
                     userName: this.ruleForm.inputUserName,
                     password: this.ruleForm.inputPassWord
                 })
@@ -126,7 +127,7 @@
                 if (value === '') {
                     callback(new Error('请输入用户名'));
                 } else {
-                    this.axios.get('/api/SqlTest/checkUserName?userName=' + this.ruleForm.inputUserName)
+                    this.axios.get('/api/user/checkUserName?userName=' + this.ruleForm.inputUserName)
                         .then(function (response) {
                             if (true == response.data) {
                                 callback(new Error('用户名已存在'));
@@ -179,7 +180,8 @@
                     inputUserName: '',
                     inputPassWord: '',
                     inputCheckPassWord: '',
-                    ifSee: 'password'
+                    ifSee: 'password',
+                    ifRegister: false
                 }
             }
         }

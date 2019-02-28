@@ -29,5 +29,4 @@ npm run lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 =======
-# Graduation-project-front
->>>>>>> 8a4a6d13b9ac978949a32d0e963852f9a309cdb4
+#毕业设计前端demo，基于vue和element组件库，目前完成登录模块，使用jwt模式，jwt使用vuex存在前端本地库中

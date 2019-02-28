@@ -15,7 +15,8 @@
                 this.$router.replace('/Login')
             },
             testHeader() {
-                this.axios.get('/api/SqlTest/testHeader', {
+                var that = this;
+                this.axios.get('/api/function/testHeader', {
                     headers: {
                         'Authorization': window.localStorage.Token,
                     }
@@ -23,7 +24,17 @@
                     .then(function (response) {
                     })
                     .catch(function (error) {
+                        that.error(error.response.data.message);
+                        window.localStorage.Token = null
+                        that.$router.replace('/Login')
                     });
+            },
+            error(message) {
+                this.$message({
+                    showClose: true,
+                    message: message,
+                    type: 'error'
+                });
             }
         }
     }
