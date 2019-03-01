@@ -190,9 +190,6 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-    .logo{
-        margin-left:300px;
-    }
     .input{
         width: 400px;
     }

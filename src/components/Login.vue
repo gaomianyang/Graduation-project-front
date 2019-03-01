@@ -27,12 +27,24 @@
                         v-model="loginForm.inputPassWord"
                         clearable
                         :type="loginForm.ifSee"
-                        maxlength="16"
-                        prefix="el-icon-view">
+                        maxlength="16">
                     <i id="ifSee" slot="prefix" class="el-icon-view" @click="see" style="margin-left: 6px"></i>
                 </el-input>
             </el-form-item>
-            <br/><br/>
+            <br/>
+            <el-form-item style="">
+                <el-input
+                        class="verInput"
+                        placeholder="请输入校验码"
+                        v-model="loginForm.verCode"
+                        clearable
+                        maxlength="4"
+                        style="bottom: 14px">
+                </el-input>
+                &nbsp&nbsp&nbsp&nbsp&nbsp
+                <img :src="loginForm.imgBase64" @click="getVerCode">
+            </el-form-item>
+            <br/>
             <el-form-item style="margin: 0 auto; text-align: center" label-width="-40px">
                 <el-row>
                     <el-button type="primary" @click="login" plain round>登录</el-button>
@@ -49,16 +61,32 @@
 
 <script>
     import Header from './Header.vue'
+    import ElFormItem from "../../node_modules/element-ui/packages/form/src/form-item";
 
     export default {
         components: {
+            ElFormItem,
             Header
         },
         name: 'Login',
         props: {
             msg: String
         },
+        mounted() {
+            this.getVerCode();
+        },
         methods: {
+            getVerCode() {
+                var that = this;
+                this.axios.get('/api/user/getImg')
+                    .then(function (response) {
+                        that.loginForm.imgBase64 = 'data:image/gif;base64,'+response.data.img;
+                        that.loginForm.imgCode = response.data.code;
+                    })
+                    .catch(function (error) {
+                        that.error('效验码获取失败,请刷新重试');
+                    });
+            },
             login() {
                 var that = this
                 if(this.loginForm.inputUserName === ''){
@@ -71,7 +99,9 @@
                 }
                 this.axios.post('/api/user/login', {
                     userName: this.loginForm.inputUserName,
-                    password: this.loginForm.inputPassWord
+                    password: this.loginForm.inputPassWord,
+                    imgCode: this.loginForm.imgCode,
+                    verCode: this.loginForm.verCode
                 })
                     .then(function (response) {
                         if (null != response.data)
@@ -81,7 +111,11 @@
                         }
                     })
                     .catch(function (error) {
-                        that.error('账号或密码错误')
+                        if(error.response.data.message === 'No value present'){
+                            that.error("账号或密码错误！");
+                        } else {
+                            that.error(error.response.data.message);
+                        }
                     });
             },
             error(message) {
@@ -105,7 +139,10 @@
                 loginForm: {
                     inputUserName: '',
                     inputPassWord: '',
-                    ifSee: 'password'
+                    ifSee: 'password',
+                    imgBase64: '',
+                    imgCode: '',
+                    verCode:''
                 }
             }
         }
@@ -114,10 +151,10 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-    .logo{
-        margin-left:300px;
-    }
     .input{
         width: 400px;
+    }
+    .verInput{
+        width: 250px;
     }
 </style>
