@@ -13,5 +13,10 @@
 </script>
 
 <style>
+  .body{
+    margin: 0 auto;
+    text-align: center;
+    width: 60%;
+  }
 </style>
 

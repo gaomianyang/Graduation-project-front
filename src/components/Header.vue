@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <div class="logo">
         <router-link to="/Welcome">
-            <a class="logo"><img src="./img/logo.png" height="80px" width="80"></a>
+            <a><img src="./img/logo.png" height="80px" width="80"></a>
         </router-link>
     </div>
 </template>
@@ -10,7 +10,7 @@
     export default {
         name: 'Header',
 //        props: {
-//            msg: String
+//            msg: String class="logo"
 //        },
     }
 </script>
@@ -19,8 +19,5 @@
 <style scoped>
     .logo{
         margin-left:20%;
-    }
-    .input{
-        width: 400px;
     }
 </style>

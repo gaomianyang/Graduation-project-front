@@ -3,17 +3,55 @@
         <Header></Header>
         <div style="margin:0 auto; width:600px;">
             <br/><br/><br/><br/><br/>
-            <br/><br/><br/><br/><br/>
             <el-form :model="ruleForm" status-icon :rules="registerRules" ref="ruleForm" label-width="100px" >
                 <el-form-item label="账号" prop="inputUserName" >
                     <el-input
                             class="input"
-                            placeholder="请输入账号/邮箱/手机号"
+                            placeholder="请输入学号/工号"
                             v-model="ruleForm.inputUserName"
                             clearable
                             maxlength="16"
-                            prefix-icon="el-icon-mobile-phone"
-                            @blur="checkUsername">
+                            prefix-icon="el-icon-menu">
+                    </el-input>
+                </el-form-item>
+                <br/>
+                <el-form-item label="电话" prop="phoneNumber" >
+                    <el-input
+                            class="input"
+                            placeholder="请输入电话号码"
+                            v-model.number="ruleForm.phoneNumber"
+                            clearable
+                            maxlength="11"
+                            prefix-icon="el-icon-mobile-phone">
+                    </el-input>
+                </el-form-item>
+                <br/>
+                <el-form-item label="电子邮箱" prop="email">
+                    <el-input
+                            class="input"
+                            placeholder="请输入电子邮箱"
+                            v-model="ruleForm.email"
+                            clearable
+                            maxlength="40"
+                            prefix-icon="el-icon-message">
+                    </el-input>
+                </el-form-item>
+                <br/>
+                <el-form-item label="姓名" prop="nameForm">
+                    <el-input
+                            class="firstNameInput"
+                            placeholder="请输入姓氏"
+                            v-model="ruleForm.firstName"
+                            clearable
+                            maxlength="2">
+                    </el-input>
+                    &nbsp&nbsp&nbsp
+                    <el-input
+                            class="lastNameInput"
+                            placeholder="请输入名字"
+                            v-model="ruleForm.lastName"
+                            clearable
+                            maxlength="4">
                     </el-input>
                 </el-form-item>
                 <br/>
@@ -85,7 +123,11 @@
                 var that = this;
                 this.axios.post('/api/user/register', {
                     userName: this.ruleForm.inputUserName,
-                    password: this.ruleForm.inputPassWord
+                    password: this.ruleForm.inputPassWord,
+                    email: this.ruleForm.email,
+                    phoneNumber: this.ruleForm.phoneNumber,
+                    firstName: this.ruleForm.firstName,
+                    lastName: this.ruleForm.lastName
                 })
                     .then(function (response) {
                         if ('OK' === response.data)
@@ -95,7 +137,8 @@
                         }
                     })
                     .catch(function (error) {
-                        this.error(error + '   连接失败');
+                        that.error(error + '   注册失败');
+                        that.$router.replace('/Login');
                     });
             },
             error(message) {
@@ -125,12 +168,12 @@
             var validateUserName = (rule, value, callback) => {
                 var that = this;
                 if (value === '') {
-                    callback(new Error('请输入用户名'));
+                    callback(new Error('请输入账号'));
                 } else {
                     this.axios.get('/api/user/checkUserName?userName=' + this.ruleForm.inputUserName)
                         .then(function (response) {
                             if (true == response.data) {
-                                callback(new Error('用户名已存在'));
+                                callback(new Error('账号已存在'));
                             }
                             else {
                                 callback();
@@ -174,14 +217,26 @@
                     ],
                     inputCheckPassWord: [
                         { validator: validateCheckPass, trigger: 'blur', required: true }
+                    ],
+                    email: [
+                        { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+                        { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+                    ],
+                    phoneNumber: [
+                        { required: true, message: '请输入电话号码', trigger: 'blur' },
+                        { type: 'number', message: '请输入正确的电话号码', trigger: ['blur', 'change'] }
                     ]
                 },
                 ruleForm: {
                     inputUserName: '',
+                    phoneNumber: '',
+                    email: '',
                     inputPassWord: '',
                     inputCheckPassWord: '',
                     ifSee: 'password',
-                    ifRegister: false
+                    ifRegister: false,
+                    firstName: '',
+                    lastName: ''
                 }
             }
         }
@@ -192,5 +247,11 @@
 <style scoped>
     .input{
         width: 400px;
+    }
+    .firstNameInput{
+        width: 150px;
+    }
+    .lastNameInput{
+        width: 230px;
     }
 </style>
