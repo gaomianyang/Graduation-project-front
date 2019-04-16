@@ -11,9 +11,6 @@ const store = new Vuex.Store({
     },
     // 改变state里面的值得方法
     mutations: {
-        getFormData(state, data) {
-            state.userName = data;
-        },
         saveToken(state, data) {
             state.token = data;
             window.localStorage.setItem("Token", data);

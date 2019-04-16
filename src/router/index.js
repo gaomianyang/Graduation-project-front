@@ -4,6 +4,9 @@ import Login from '@/components/Login.vue'
 import Welcome from '@/components/Welcome.vue'
 import Register from '@/components/Register.vue'
 import Info from '@/components/Info.vue'
+import MyTasks from '@/components/MyTasks.vue'
+import MyFlowWork from '@/components/MyFlowWork.vue'
+import MyProcess from '@/components/MyProcess.vue'
 import Store from '@/vuex/store'
 
 
@@ -15,7 +18,7 @@ const router = new VueRouter({
   {
     path: '/Welcome',
     name: 'Welcome',
-    component: Welcome
+    component: Welcome,
   },
   {
     path: '/Login',
@@ -37,6 +40,30 @@ const router = new VueRouter({
       path: '/Info',
       name: 'Info',
       component: Info,
+      meta: {
+          requireAuth: true // 添加该字段，表示进入这个路由是需要登录的
+      }
+  },
+  {
+      path: '/MyFlowWork',
+      name: 'MyFlowWork',
+      component: MyFlowWork,
+      meta: {
+          requireAuth: true // 添加该字段，表示进入这个路由是需要登录的
+      }
+  },
+  {
+      path: '/MyTasks',
+      name: 'MyTasks',
+      component: MyTasks,
+      meta: {
+          requireAuth: true // 添加该字段，表示进入这个路由是需要登录的
+      }
+  },
+  {
+      path: '/MyProcess',
+      name: 'MyProcess',
+      component: MyProcess,
       meta: {
           requireAuth: true // 添加该字段，表示进入这个路由是需要登录的
       }

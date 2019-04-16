@@ -61,6 +61,7 @@
 
 <script>
     import Header from './Header.vue'
+    import Store from '@/vuex/store'
 //    import ElFormItem from "../../node_modules/element-ui/packages/form/src/form-item";
 
     export default {
@@ -72,7 +73,7 @@
         props: {
             msg: String
         },
-        mounted() {
+        created() {
             this.getVerCode();
         },
         methods: {
@@ -82,7 +83,7 @@
                 )
                     .then(function (response) {
                         if(that.loginForm.adminPassword !== ''){
-                            window.location.href = 'http://localhost:8080/activiti-app/#/';
+                            window.location.href = 'admin/activiti-app/#/';
                         }
                     })
                     .catch(function (error) {

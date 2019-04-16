@@ -62,8 +62,7 @@
                             v-model="ruleForm.inputPassWord"
                             clearable
                             :type="ruleForm.ifSee"
-                            maxlength="16"
-                            prefix="el-icon-view">
+                            maxlength="16">
                         <i id="ifSee" slot="prefix" class="el-icon-view" @click="see" style="margin-left: 6px"></i>
                     </el-input>
                 </el-form-item>
@@ -75,18 +74,15 @@
                             v-model="ruleForm.inputCheckPassWord"
                             clearable
                             :type="ruleForm.ifSee"
-                            maxlength="16"
-                            prefix="el-icon-view">
+                            maxlength="16">
                         <i id="ifSee2" slot="prefix" class="el-icon-view" @click="see" style="margin-left: 6px"></i>
                     </el-input>
                 </el-form-item>
                 <br/><br/>
                 <el-form-item style="margin: 0 auto; text-align: center" label-width="-50px">
-                    <el-row>
-                        <el-button type="primary" @click="submitForm('ruleForm')" plain round :disabled="ruleForm.ifRegister">注册</el-button>
-                        &nbsp&nbsp&nbsp&nbsp
-                        <el-button type="primary" @click="resetForm('ruleForm')" plain round>重置</el-button>
-                    </el-row>
+                    <el-button type="primary" @click="submitForm('ruleForm')" plain round :disabled="ruleForm.ifRegister">注册</el-button>
+                    &nbsp&nbsp&nbsp&nbsp
+                    <el-button type="primary" @click="resetForm('ruleForm')" plain round>重置</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -192,9 +188,6 @@
                 if (value === '') {
                     callback(new Error('请输入密码'));
                 } else {
-                    if (this.ruleForm.inputCheckPassWord !== '') {
-                        this.$refs.ruleForm.validateField('inputCheckPassWord');
-                    }
                     callback();
                 }
             };
@@ -205,6 +198,17 @@
                     callback(new Error('两次输入密码不一致!'));
                 } else {
                     callback();
+                }
+            };
+            var validateCheckPhone = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请输入电话号码'));
+                } else {
+                    if (isNaN(value)) {
+                        callback(new Error('请输入正确电话号码!'));
+                    } else {
+                        callback();
+                    }
                 }
             };
             return {
@@ -223,8 +227,7 @@
                         { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
                     ],
                     phoneNumber: [
-                        { required: true, message: '请输入电话号码', trigger: 'blur' },
-                        { type: 'number', message: '请输入正确的电话号码', trigger: ['blur', 'change'] }
+                        { validator: validateCheckPhone, trigger: 'blur', required: true }
                     ]
                 },
                 ruleForm: {

@@ -11,7 +11,7 @@ module.exports = {
                     '^/api': ''
                 }
             },
-            'admin': {
+            '/admin': {
                 target: "http://localhost:8080",
                 ws: true,
                 changOrigin: true,

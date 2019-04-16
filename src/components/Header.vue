@@ -10,7 +10,7 @@
     export default {
         name: 'Header',
 //        props: {
-//            msg: String class="logo"
+//            msg: String
 //        },
     }
 </script>
