@@ -1,6 +1,6 @@
 <template>
     <el-dialog title="信息修改" :visible.sync="dialogFormVisible" center>
-        <el-form :model="ruleForm" status-icon :rules="registerRules" ref="ruleForm" label-width="100px" style="margin-left: 20%" >
+        <el-form v-loading="loading" :model="ruleForm" status-icon :rules="registerRules" ref="ruleForm" label-width="100px" style="margin-left: 20%" >
             <el-form-item label="电话" prop="phoneNumber" >
                 <el-input
                         class="input"
@@ -23,7 +23,7 @@
                 </el-input>
             </el-form-item>
             <br/>
-            <el-form-item label="姓名" prop="nameForm">
+            <el-form-item label="姓名">
                 <el-input
                         class="firstNameInput"
                         placeholder="请输入姓氏"
@@ -92,19 +92,14 @@
         },
         name: 'ChangeInfo',
         props: {
-                infoForm: {
-                    phoneNumber: '',
-                    email: '',
-                    firstName: '',
-                    lastName: '',
-                    groupName: ''
-                }
+                infoForm: {}
         },
         created() {
             this.getGroupList();
         },
         methods: {
             changeInfo() {
+                this.loading = true;
                 var that = this;
                 this.axios.put('/api/function/info', {
                     phoneNumber: this.ruleForm.phoneNumber,
@@ -124,6 +119,7 @@
                         that.ruleForm.inputCheckPassWord = '';
                         that.$emit('refreshInfo',null);
                         that.dialogFormVisible = false;
+                        that.loading = false;
                     })
                     .catch(function (error) {
                         that.error(error.response.data.message);
@@ -139,9 +135,8 @@
                     }
                 })
                     .then(function (response) {
-                        for(var i = 0; i<response.data.length; i++){
-                            that.options[i] = response.data[i];
-                        }
+                        that.options = response.data;
+                        console.info(that.options);
                     })
                     .catch(function (error) {
                         that.error(error.response.data.message);
@@ -229,7 +224,8 @@
                 },
                 dialogFormVisible: false,
                 options: [],
-                choseValue: ''
+                choseValue: '',
+                loading: false
             }
         }
     }

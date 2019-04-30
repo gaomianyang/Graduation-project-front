@@ -3,8 +3,8 @@
         <Header msg="1"></Header>
         <ChangeInfo :infoForm="this.infoForm" ref="ChangeInfo" v-on:refreshInfo="getInfo"></ChangeInfo>
         <br/><br/><br/><br/><br/><br/><br/><br/>
-        <div class="infoBody">
-            <el-form label-suffix="：" class="infoForm" :model="infoForm" ref="infoForm" >
+        <div class="infoBody" v-loading="loading">
+            <el-form label-suffix="：" class="infoForm" :model="infoForm" ref="infoForm">
                 <br/><br/>
                 <el-form-item label="账号">
                     <span style="float: left">{{infoForm.userName}}</span>
@@ -51,6 +51,7 @@
                 this.$refs.ChangeInfo.show();
             },
             getInfo() {
+                this.loading = true;
                 var that = this;
                 this.axios.get('/api/function/info', {
                     headers: {
@@ -59,6 +60,7 @@
                 })
                     .then(function (response) {
                         that.infoForm = response.data;
+                        that.loading = false;
                     })
                     .catch(function (error) {
                         that.error(error.response.data.message);
@@ -86,8 +88,9 @@
                     email: '',
                     firstName: '',
                     lastName: '',
-                    groupName: ''
+                    groupName: '',
                 },
+                loading: true
             }
         }
     }

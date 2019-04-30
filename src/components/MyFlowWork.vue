@@ -57,7 +57,7 @@
                     return list
                 }
                 return list.filter((item)=>{
-                    if(item.name.indexOf(this.query) != -1){
+                    if(item.name.indexOf(this.query) !== -1){
                         return item;
                     }
                 })

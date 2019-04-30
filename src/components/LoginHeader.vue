@@ -31,16 +31,16 @@
             handleSelect(key, keyPath) {
                 switch(key){
                     case '1':
-                        this.$router.replace('/Info');
+                        this.$router.push('/Info');
                         break;
                     case '2':
-                        this.$router.replace('/MyFlowWork');
+                        this.$router.push('/MyFlowWork');
                         break;
                     case '3':
-                        this.$router.replace('/MyTasks');
+                        this.$router.push('/MyTasks');
                         break;
                     case '4':
-                        this.$router.replace('/MyProcess');
+                        this.$router.push('/MyProcess');
                         break;
                 }
             }
