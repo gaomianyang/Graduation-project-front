@@ -22,7 +22,6 @@
                 </el-table>
             </div>
             <div v-loading="formLoding" style="float: left; width: 600px; margin-left: 10%; margin-top: 50px; max-height: 770px;">
-                <el-button v-if="state !== 'completed' && clickRow !== '' && taskType === 'claim'" type="primary" plain round @click="claim" style="float: left">claim</el-button>
                 <br/><br/><br/>
                 <el-form v-if="showForm" ref="numberValidateForm" class="demo-ruleForm" style="max-height: 770px;">
                     <el-form-item>
@@ -71,6 +70,7 @@
                         <el-input v-else :placeholder="inputMessage.type"></el-input>
                     </el-form-item>
                 </el-form>
+                <el-button v-if="state !== 'completed' && clickRow !== '' && taskType === 'claim'" type="primary" plain round @click="claim">claim</el-button>
                 <el-button v-if="state !== 'completed' && clickRow !== '' && taskType === 'complete'" type="primary" plain round @click="completeTask">complete</el-button>
             </div>
         </div>
@@ -151,6 +151,7 @@
                 if(row.id !== this.clickRow) {
                     this.clickRow = row.id;
                     this.formLoding = true;
+                    this.formInit();
                     var that = this;
                     this.axios.get('/api/function/tasks?taskId=' + row.id, {
                         headers: {
@@ -166,7 +167,6 @@
                                     }
                                 })
                                     .then(function (response) {
-                                        that.formInit();
                                         that.taskForm = response.data;
                                         that.formLoding = false;
                                         that.showForm = true;
@@ -183,7 +183,6 @@
                             console.info(that.created);
                             if((response.data.memberOfCandidateUsers || response.data.memberOfCandidateGroup) && response.data.assignee === null){
                                 that.taskType = 'claim';
-                                that.formInit();
                                 that.formLoding = false;
                                 that.showForm = true;
                             } else if (response.data.assignee !== null) {
@@ -328,9 +327,15 @@
 //                    eval("that.formValueMap." + that.taskForm[i].id + "=" + that.formValue[i]);
                     that.formValueMap[that.taskForm[i].id] = that.taskForm[i].value;
                 }
+                var values;
+                var formId;
+                if (typeof(this.taskForm[0]) !== "undefined"){
+                    values = this.formValueMap;
+                    formId = this.taskForm[0].formId;
+                }
                 this.axios.put('/api/function/tasks?taskId='+this.clickRow, {
-                    values: this.formValueMap,
-                    formId: this.taskForm[0].formId
+                    values: values,
+                    formId: formId
                 }, {
                     headers: {
                         'Authorization': window.localStorage.Token
