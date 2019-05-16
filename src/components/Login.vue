@@ -83,7 +83,7 @@
                 )
                     .then(function (response) {
                         if(that.loginForm.adminPassword !== ''){
-                            window.location.href = 'admin/activiti-app/#/';
+                            window.location.href = 'http://localhost:8080/activiti-app/#/';
                         }
                     })
                     .catch(function (error) {
