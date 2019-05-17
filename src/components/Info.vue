@@ -4,7 +4,7 @@
         <ChangeInfo :infoForm="this.infoForm" ref="ChangeInfo" v-on:refreshInfo="getInfo"></ChangeInfo>
         <br/><br/><br/><br/><br/><br/><br/><br/>
         <div class="infoBody" v-loading="loading">
-            <el-form label-suffix="：" class="infoForm" :model="infoForm" ref="infoForm">
+            <el-form v-if="fromShow" label-suffix="：" class="infoForm" :model="infoForm" ref="infoForm">
                 <br/><br/>
                 <el-form-item label="账号">
                     <span style="float: left">{{infoForm.userName}}</span>
@@ -36,6 +36,7 @@
             <br/><br/><br/><br/>
 
             <el-dialog
+                    @closed="reShow"
                     :visible.sync="dialogVisible"
                     width="30%"
                     :before-close="handleClose">
@@ -64,6 +65,9 @@
             this.getInfo();
         },
         methods: {
+            reShow(){
+                this.getInfo();
+            },
             wx(){
                 var that = this;
                 this.axios.get('/api/function/codeImg', {
@@ -126,7 +130,8 @@
                 },
                 loading: true,
                 dialogVisible: false,
-                url: ''
+                url: '',
+                fromShow: true
             }
         }
     }

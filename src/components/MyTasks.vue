@@ -23,14 +23,11 @@
             </div>
             <div v-loading="formLoding" style="float: left; width: 600px; margin-left: 10%; margin-top: 50px; max-height: 770px;">
                 <br/><br/><br/>
+                <span v-if="showForm || showMessage" style="float: left">任务创建时间: {{ this.created }}</span>
+                <el-button v-if="showForm || showMessage" style="float: right" type="primary" icon="el-icon-d-arrow-right" plain @click="goProcess">查看该流程</el-button>
+                <span v-if="(showForm || showMessage) && this.state === 'completed'" style="float: left">任务完成人: {{ this.assignee }}</span>
+                <br/><br/><br/>
                 <el-form v-if="showForm" ref="numberValidateForm" class="demo-ruleForm" style="max-height: 770px;">
-                    <el-form-item>
-                        <span style="float: left">任务创建时间: {{ this.created }}</span>
-                        <el-button style="float: right" v-if="state !== 'completed'" type="primary" icon="el-icon-d-arrow-right" plain @click="">查看该流程</el-button>
-                    </el-form-item>
-                    <el-form-item v-if="this.state === 'completed'">
-                        <span style="float: left">任务完成人: {{ this.assignee }}</span>
-                    </el-form-item>
                     <el-form-item v-for="(inputMessage, index) in this.taskForm" :required="inputMessage.required === 'true'">
                         <el-input
                                 :disabled="state === 'completed' || inputMessage.readOnly ==='true' || disabled"
@@ -87,7 +84,6 @@
         },
         name: 'MyTasks',
         created() {
-            this.getTasks(false);
             if(this.$route.query.type === 'completed'){
                 this.stateShow = '已完成任务';
                 this.state = 'completed';
@@ -99,7 +95,7 @@
             }
         },
         mounted() {
-            this.pushClick(this.$route.query.taskId);
+            this.getTasks(false);
         },
         methods: {
             claim() {
@@ -127,7 +123,7 @@
                     }
                 })
                     .then(function (response) {
-                        this.$router.push({path: '/MyProcess', query: {processId: response.data.processInstanceId, type: that.state}})
+                        that.$router.push({path: '/MyProcess', query: {processId: response.data.processInstanceId}})
                     })
                     .catch(function (error) {
                         that.error(error.response.data.message);
@@ -169,12 +165,11 @@
                                     .then(function (response) {
                                         that.taskForm = response.data;
                                         that.formLoding = false;
-                                        that.showForm = true;
                                     })
                                     .catch(function (error) {
                                         that.error(error.response.data.message);
                                         window.localStorage.Token = null;
-                                        that.$router.replace('/Login')
+                                        that.$router.replace('/Login');
                                     });
                             }
                             if (that.state === 'completed'){
@@ -184,7 +179,7 @@
                             if((response.data.memberOfCandidateUsers || response.data.memberOfCandidateGroup) && response.data.assignee === null){
                                 that.taskType = 'claim';
                                 that.formLoding = false;
-                                that.showForm = true;
+                                that.showMessage = true;
                             } else if (response.data.assignee !== null) {
                                 that.axios.get('/api/function/comAuthentication?userId=' + row.assignee.id, {
                                     headers: {
@@ -220,6 +215,7 @@
                 this.disabled = true;
                 var that = this;
                 if(typeof(taskId) !== "undefined") {
+                    that.clickRow = taskId;
                     that.formLoding = true;
                     that.axios.get('/api/function/tasks?taskId=' + taskId, {
                         headers: {
@@ -308,11 +304,13 @@
                 })
                     .then(function (response) {
                         that.formInit();
-                        if (ifInitClickRow){
-                            that.clickRow = '';
-                        }
                         that.tableDate = response.data;
+                        that.clickRow = '';
+                        if (!ifInitClickRow){
+                            that.pushClick(that.$route.query.taskId);
+                        }
                         that.loading = false;
+                        that.formLoding = false;
                     })
                     .catch(function (error) {
                         that.error(error.response.data.message);
@@ -343,7 +341,6 @@
                 })
                     .then(function (response) {
                         that.getTasks(true);
-                        that.formLoding = false;
                         that.success("提交成功！");
                     })
                     .catch(function (error) {
@@ -391,7 +388,8 @@
                 created: '',
                 taskType: '',
                 assignee: '',
-                disabled: true
+                disabled: true,
+                showMessage: false
             }
         }
     }

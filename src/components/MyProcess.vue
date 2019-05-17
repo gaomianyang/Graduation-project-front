@@ -106,6 +106,49 @@
                         });
                 }
             },
+            pushClick(row) {
+                if(typeof(row) !== "undefined") {
+                    this.clickRow = row;
+                    this.bodyLoading = true;
+//                    this.processCreater = row.startedBy.fullName;
+                    var request = 0;
+                    var that = this;
+                    this.axios.get('/api/function/tasks?processId=' + row, {
+                        headers: {
+                            'Authorization': window.localStorage.Token
+                        }
+                    })
+                        .then(function (response) {
+                            that.runningTableDate = response.data;
+                            if (++request === 2){
+                                that.showBody = true;
+                                that.bodyLoading = false
+                            }
+                        })
+                        .catch(function (error) {
+                            that.error(error.response.data.message);
+                            window.localStorage.Token = null;
+                            that.$router.replace('/Login');
+                        });
+                    this.axios.get('/api/function/tasks?processId=' + row + '&getType=completed', {
+                        headers: {
+                            'Authorization': window.localStorage.Token
+                        }
+                    })
+                        .then(function (response) {
+                            that.completedTableDate = response.data;
+                            if (++request === 2){
+                                that.showBody = true;
+                                that.bodyLoading = false
+                            }
+                        })
+                        .catch(function (error) {
+                            that.error(error.response.data.message);
+                            window.localStorage.Token = null;
+                            that.$router.replace('/Login');
+                        });
+                }
+            },
             completedHandleClick(row) {
                 this.$router.push({path: '/MyTasks', query: {taskId: row.id, type: 'completed'}})
             },
@@ -155,7 +198,23 @@
                 })
                     .then(function (response) {
                         that.clickRow = '';
-                        that.tableDate = response.data;
+                            if(typeof(that.$route.query.processId) !== "undefined") {
+                                that.clickRow = that.$route.query.processId;
+                                var change = true;
+                                response.data.forEach((process) => {
+                                    if (process.id === that.$route.query.processId) {
+                                        change = false;
+                                    }
+                                });
+                                if (change) {
+                                    that.stateClick();
+                                } else {
+                                    that.tableDate = response.data;
+                                }
+                                that.pushClick(that.$route.query.processId);
+                            } else {
+                                that.tableDate = response.data;
+                            }
                         that.taskLoading = false;
                     })
                     .catch(function (error) {
